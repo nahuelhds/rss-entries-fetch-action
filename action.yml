@@ -1,23 +1,26 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Add your action's branding here. This will appear on the GitHub Marketplace.
+name: 'RSS Feed Entries Fetch Action'
+description: 'Traverses the entries from a RSS feed and saves it to a file'
+author: 'Nahuel Sotelo <nahuelhds@gmail.com>'
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'rss'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  feed_url:
+    description: 'URL or JSON array of URLs of the RSS feed(s) to fetch'
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  file_path:
+    description: 'Relative file path or JSON array of file paths at which to save the fetched RSS feed(s)'
+    required: true
+  parser_options:
+    description: 'JSON string for parser options'
+    required: false
+  fetch_options:
+    description: 'JSON string for fetch options'
+    required: false
+  remove_published:
+    description: 'Remove the published date from the feed for easier diffing'
+    required: false
+    default: 'false'
 
 runs:
   using: node20
