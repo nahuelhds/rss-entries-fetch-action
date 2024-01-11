@@ -1,7 +1,8 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import * as path from 'path'
+import * as fs from 'fs'
 
-async function fetchRssFeed() {
+export async function run() {
   try {
     const feedExtractor = await import('@extractus/feed-extractor')
     const extract = feedExtractor.extract

@@ -1,6 +1,6 @@
 name: 'RSS Feed Entries Fetch Action'
 description: 'Traverses the entries from a RSS feed and saves it to a file'
-author: 'Nahuel Sotelo <nahuelhds@gmail.com>'
+author: 'Nahue <nahuelhds@gmail.com>'
 branding:
   icon: 'rss'
 
