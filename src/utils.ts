@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import { InvalidUrlError, ParseUrlsError } from "./errors.js";
+import { InvalidUrlError, ParseUrlsError } from "./errors";
 
 export function getInputFeedUrls(): URL[] {
   return parseInputFeedUrls().map((url) => {

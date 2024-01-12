@@ -3,9 +3,9 @@ import { extract as articleExtractor } from "@extractus/article-extractor";
 import { extract as feedExtractor } from "@extractus/feed-extractor";
 import fs from "fs";
 
-import { UnknownError } from "./errors.js";
-import { logger } from "./logger.js";
-import { buildFilename, getInputFeedUrls, getOutputDir } from "./utils.js";
+import { UnknownError } from "./errors";
+import { logger } from "./logger";
+import { buildFilename, getInputFeedUrls, getOutputDir } from "./utils";
 
 export async function run() {
   try {

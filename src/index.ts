@@ -2,6 +2,6 @@
  * The entrypoint for the action.
  */
 
-import { run } from "./main.js";
+import { run } from "./main";
 
-await run();
+void run();
