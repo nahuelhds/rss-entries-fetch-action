@@ -23,7 +23,7 @@ export type FeedData = {
 
 export interface ProxyConfig {
   target?: string;
-  headers?: any;
+  headers?: unknown;
 }
 
 export interface ReaderOptions {
@@ -46,7 +46,7 @@ export interface ReaderOptions {
    * fast-xml-parser options
    * https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v4/2.XMLparseOptions.md
    */
-  xmlParserOptions?: any;
+  xmlParserOptions?: unknown;
   /**
    * fill in the baseurl when it does not exist in the link
    * default: ''
@@ -73,8 +73,8 @@ export interface FetchOptions {
     | "HEAD"
     | "OPTIONS"
     | "CONNECT";
-  headers?: any;
-  body?: any;
+  headers?: unknown;
+  body?: unknown;
   mode?: "cors" | "no-cors" | "same-origin";
   credentials?: "omit" | "same-origin" | "include";
   cache?:
@@ -92,7 +92,7 @@ export interface FetchOptions {
     | "origin"
     | "origin-when-cross-origin"
     | "unsafe-url";
-  integrity?: any;
+  integrity?: unknown;
   proxy?: ProxyConfig;
   /**
    * http proxy agent

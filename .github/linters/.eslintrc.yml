@@ -26,6 +26,8 @@ parserOptions:
 plugins:
   - jest
   - '@typescript-eslint'
+  - "simple-import-sort"
+  - "import"
 
 extends:
   - eslint:recommended
@@ -50,10 +52,10 @@ rules:
     '@typescript-eslint/ban-ts-comment': 'error',
     '@typescript-eslint/consistent-type-assertions': 'error',
     '@typescript-eslint/explicit-member-accessibility':
-      ['error', { 'accessibility': 'no-public' }],
+      [ 'error', { 'accessibility': 'no-public' } ],
     '@typescript-eslint/explicit-function-return-type':
-      ['error', { 'allowExpressions': true }],
-    '@typescript-eslint/func-call-spacing': ['error', 'never'],
+      [ 'error', { 'allowExpressions': true } ],
+    '@typescript-eslint/func-call-spacing': [ 'error', 'never' ],
     '@typescript-eslint/no-array-constructor': 'error',
     '@typescript-eslint/no-empty-interface': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
@@ -76,8 +78,13 @@ rules:
     '@typescript-eslint/promise-function-async': 'error',
     '@typescript-eslint/require-array-sort-compare': 'error',
     '@typescript-eslint/restrict-plus-operands': 'error',
-    '@typescript-eslint/semi': ['error', 'never'],
+    '@typescript-eslint/semi': [ 'error', 'never' ],
     '@typescript-eslint/space-before-function-paren': 'off',
     '@typescript-eslint/type-annotation-spacing': 'error',
-    '@typescript-eslint/unbound-method': 'error'
+    '@typescript-eslint/unbound-method': 'error',
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   }
