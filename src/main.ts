@@ -1,19 +1,25 @@
 import { setFailed } from "@actions/core";
-import { extract as articleExtractor } from "@extractus/article-extractor";
-import { extract as feedExtractor } from "@extractus/feed-extractor";
 import fs from "fs";
 
 import { UnknownError } from "./errors";
 import { logger } from "./logger";
+import { ArticleExtractor } from "./types/article-extractor";
+import { FeedData, FeedExtractor } from "./types/feed-extractor";
 import { buildFilename, getInputFeedUrls, getOutputDir } from "./utils";
 
 export async function run() {
   try {
+    const articleExtractor = (await import(
+      "@extractus/article-extractor"
+    )) as unknown as ArticleExtractor;
+    const feedExtractor = (await import(
+      "@extractus/feed-extractor"
+    )) as unknown as FeedExtractor;
     const outputDir = getOutputDir();
     const feedUrls = getInputFeedUrls();
 
     feedUrls.map(async (feedUrl: URL) => {
-      const feedData = await feedExtractor(feedUrl.toString());
+      const feedData: FeedData = await feedExtractor(feedUrl.toString());
       if (!feedData.entries || feedData.entries.length === 0) {
         logger.warn(
           `Feed ${feedUrl} does not contain any entry. Cannot continue.`,
@@ -67,5 +73,3 @@ export async function run() {
     setFailed(new UnknownError(error).message);
   }
 }
-
-export default {};
