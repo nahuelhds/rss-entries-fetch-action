@@ -1,4 +1,4 @@
-name: "RSS Feed Entries Fetch Action"
+name: "RSS Entries Fetch Action"
 description: "Traverses the entries from a RSS feed and saves it to a file"
 author: "Nahue <nahuelhds@gmail.com>"
 branding:
