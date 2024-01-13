@@ -9,37 +9,37 @@ describe("io", () => {
   });
 
   describe("getInputFeedUrls", () => {
-    it("throws NoUrlsGivenError if INPUT_FEED_URL is an empty string", () => {
-      process.env.INPUT_FEED_URL = "";
+    it("throws NoUrlsGivenError if FEED_URLS is an empty string", () => {
+      process.env.FEED_URLS = "";
       expect(() => getInputFeedUrls()).toThrow(NoUrlsGivenError);
     });
 
-    it("throws InvalidUrlError if INPUT_FEED_URL is not an URL", () => {
-      process.env.INPUT_FEED_URL = "not-a-val;;;id-url";
+    it("throws InvalidUrlError if FEED_URLS is not an URL", () => {
+      process.env.FEED_URLS = "not-a-val;;;id-url";
       expect(() => getInputFeedUrls()).toThrow(InvalidUrlError);
     });
 
-    it("throws InvalidUrlError if INPUT_FEED_URL contains a not an URL", () => {
-      process.env.INPUT_FEED_URL =
+    it("throws InvalidUrlError if FEED_URLS contains a not an URL", () => {
+      process.env.FEED_URLS =
         '["https://www.google.com", "not-a-val;;;id-url"]';
       expect(() => getInputFeedUrls()).toThrow(InvalidUrlError);
     });
 
-    it("throws ParseUrlsError if INPUT_FEED_URL is not an array or string", () => {
-      process.env.INPUT_FEED_URL =
+    it("throws ParseUrlsError if FEED_URLS is not an array or string", () => {
+      process.env.FEED_URLS =
         '{ "https://www.google.com": "not-a-val;;;id-url" }';
       expect(() => getInputFeedUrls()).toThrow(ParseUrlsError);
     });
 
     it("returns URL per every url string given", () => {
       const urls = ["https://www.google.com", "https://www.facebook.com"];
-      process.env.INPUT_FEED_URL = JSON.stringify(urls);
+      process.env.FEED_URLS = JSON.stringify(urls);
       expect(getInputFeedUrls()).toStrictEqual(urls.map((url) => new URL(url)));
     });
 
     it("returns an URL array when a common string is given", () => {
       const url = "https://www.google.com";
-      process.env.INPUT_FEED_URL = JSON.stringify(url);
+      process.env.FEED_URLS = JSON.stringify(url);
       expect(getInputFeedUrls()).toStrictEqual([new URL(url)]);
     });
   });

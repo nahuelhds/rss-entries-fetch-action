@@ -55,7 +55,8 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          feed_urls: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+          destination_folder: "./test_ci"
 
       - name: Print Output
         id: output
