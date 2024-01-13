@@ -9,13 +9,26 @@ import { FeedEntry } from "./types/feed-extractor";
 
 export type ArticleWithUrl = ArticleData & { url: string };
 
-export async function extractArticle(feedEntry: FeedEntry) {
+async function fetchArticle(feedEntry: FeedEntry) {
   if (!feedEntry.link) {
     throw new FeedEntryWithoutLinkError(feedEntry);
   }
 
-  const extract = await articleExtractor();
-  const article = await extract(feedEntry.link);
+  try {
+    const extract = await articleExtractor();
+    return await extract(feedEntry.link);
+  } catch (err) {
+    const error = err as Error;
+    if (error.message === "Request failed with error code 404") {
+      return null;
+    }
+
+    throw err;
+  }
+}
+
+export async function extractArticle(feedEntry: FeedEntry) {
+  const article = await fetchArticle(feedEntry);
   if (article === null) {
     throw new ArticleNotFoundError(feedEntry);
   }

@@ -48,13 +48,13 @@ describe("getOutputDir", () => {
     "returns ./ if INPUT_DESTINATION_FOLDER is %s",
     (falsyValue) => {
       process.env.INPUT_DESTINATION_FOLDER = falsyValue;
-      expect(getDestinationFolder()).toBe("./");
+      expect(getDestinationFolder()).toBe("./public");
     },
   );
 
   it("returns INPUT_DESTINATION_FOLDER if it is set", () => {
-    process.env.INPUT_DESTINATION_FOLDER = "./public";
-    expect(getDestinationFolder()).toBe("./public");
+    process.env.INPUT_DESTINATION_FOLDER = "./destination";
+    expect(getDestinationFolder()).toBe("./destination");
   });
 });
 

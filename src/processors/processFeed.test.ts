@@ -4,7 +4,6 @@ import { FeedWithoutEntriesError } from "../extractors/errors";
 import { extractFeed, FeedWithEntries } from "../extractors/extractFeed";
 import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
-import { UnknownError } from "../utils/errors";
 import { processEntry } from "./processEntry";
 import { processFeed } from "./processFeed";
 
@@ -25,16 +24,20 @@ describe("processFeed", () => {
 
   it("returns error if something unexpected happens", async () => {
     const url = new URL("https://www.google.com");
-    const thrownError = new Error("Unpredictable error");
-    const expectedError = new UnknownError(thrownError);
+    const expectedError = new Error("Unpredictable error");
 
-    extractFeedMock.mockRejectedValue(thrownError);
+    extractFeedMock.mockRejectedValue(expectedError);
 
-    await processFeed(url);
+    await expect(async () => await processFeed(url)).rejects.toThrow(
+      expectedError,
+    );
 
     expect(processEntryMock).not.toHaveBeenCalled();
     expect(logger.warn).not.toHaveBeenCalled();
-    expect(setFailedMock).toHaveBeenCalledWith(expectedError.message);
+    expect(logger.error).toHaveBeenCalledWith(
+      "Unexpected error when processing feed",
+      expectedError,
+    );
   });
 
   it("warns the error if something happens", async () => {

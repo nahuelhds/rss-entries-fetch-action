@@ -1,9 +1,7 @@
-import { setFailed } from "@actions/core";
 import { CustomError } from "ts-custom-error";
 
 import { extractFeed } from "../extractors/extractFeed";
 import logger from "../logger";
-import { UnknownError } from "../utils/errors";
 import { processEntry } from "./processEntry";
 
 export async function processFeed(feedUrl: URL) {
@@ -16,9 +14,7 @@ export async function processFeed(feedUrl: URL) {
       return;
     }
 
-    const unknownError = new UnknownError(err);
-    logger.error(unknownError.message, unknownError);
-    setFailed(unknownError.message);
-    return;
+    logger.error("Unexpected error when processing feed", err);
+    throw err;
   }
 }

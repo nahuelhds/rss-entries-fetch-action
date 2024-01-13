@@ -42,7 +42,7 @@ function parseInputFeedUrls(): string[] {
 }
 
 export function getDestinationFolder() {
-  return process.env.INPUT_DESTINATION_FOLDER || "./";
+  return process.env.INPUT_DESTINATION_FOLDER || "./public";
 }
 
 export function buildFilename(url: string, outputLength = 40) {

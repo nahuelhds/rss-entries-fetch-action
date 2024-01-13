@@ -4,7 +4,6 @@ import { FeedEntryWithoutLinkError } from "../extractors/errors";
 import { ArticleWithUrl, extractArticle } from "../extractors/extractArticle";
 import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
-import { UnknownError } from "../utils/errors";
 import { storeFile } from "../utils/fs";
 import { buildFilename, getDestinationFolder } from "../utils/io";
 import { processEntry } from "./processEntry";
@@ -23,15 +22,19 @@ describe("processEntry", () => {
   const storeFileMock = storeFile as jest.MockedFunction<typeof storeFile>;
 
   it("returns error if something unexpected happens", async () => {
-    const thrownError = new Error("Unpredictable error");
-    const expectedError = new UnknownError(thrownError);
-    extractArticleMock.mockRejectedValue(thrownError);
+    const expectedError = new Error("Unpredictable error");
+    extractArticleMock.mockRejectedValue(expectedError);
 
-    await processEntry({ id: "test-id" });
+    await expect(
+      async () => await processEntry({ id: "test-id" }),
+    ).rejects.toThrow(expectedError);
 
     expect(storeFileMock).not.toHaveBeenCalled();
     expect(logger.warn).not.toHaveBeenCalled();
-    expect(setFailedMock).toHaveBeenCalledWith(expectedError.message);
+    expect(logger.error).toHaveBeenCalledWith(
+      "Unexpected error when processing entry",
+      expectedError,
+    );
   });
 
   it("warns the error if something happens", async () => {

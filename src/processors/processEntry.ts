@@ -1,10 +1,8 @@
-import { setFailed } from "@actions/core";
 import { CustomError } from "ts-custom-error";
 
 import { extractArticle } from "../extractors/extractArticle";
 import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
-import { UnknownError } from "../utils/errors";
 import { storeFile } from "../utils/fs";
 import { buildFilename, getDestinationFolder } from "../utils/io";
 
@@ -27,9 +25,7 @@ export async function processEntry(feedEntry: FeedEntry) {
       return;
     }
 
-    const unknownError = new UnknownError(err);
-    logger.error(unknownError.message, unknownError);
-    setFailed(unknownError.message);
-    return;
+    logger.error("Unexpected error when processing entry", err);
+    throw err;
   }
 }

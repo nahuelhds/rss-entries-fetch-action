@@ -6,6 +6,8 @@ import { processFeed } from "./processors/processFeed";
 import { UnknownError } from "./utils/errors";
 import { getInputFeedUrls } from "./utils/io";
 
+// import { getInputFeedUrls } from "./utils/io";
+
 export async function runAction() {
   try {
     const feedUrls = getInputFeedUrls();
@@ -18,7 +20,7 @@ export async function runAction() {
     }
 
     const unknownError = new UnknownError(err);
-    logger.error(unknownError.message, unknownError);
+    logger.error(unknownError.message, err);
     setFailed(unknownError.message);
     return;
   }
