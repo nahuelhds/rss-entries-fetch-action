@@ -101,6 +101,4 @@ __tests__/runner/*
 .idea
 .vscode
 *.code-workspace
-dist/
-!diffnews-entries-fetch-error.log
 
