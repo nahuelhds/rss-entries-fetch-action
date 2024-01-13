@@ -1,11 +1,11 @@
-import { ArticleData } from "../types/article-extractor";
-import { FeedEntry } from "../types/feed-extractor";
 import {
   ArticleNotFoundError,
   ArticleWithoutUrlError,
   FeedEntryWithoutLinkError,
 } from "./errors";
 import { articleExtractor } from "./helpers";
+import { ArticleData } from "./types/article-extractor";
+import { FeedEntry } from "./types/feed-extractor";
 
 type ArticleWithUrl = ArticleData & { url: string };
 

@@ -1,7 +1,7 @@
-import { FeedData, FeedEntry } from "../types/feed-extractor";
 import { FeedWithoutEntriesError } from "./errors";
 import { extractFeed } from "./extractFeed";
 import { feedExtractor } from "./helpers";
+import { FeedData, FeedEntry } from "./types/feed-extractor";
 
 jest.mock("./helpers.ts", () => ({
   feedExtractor: jest.fn(),

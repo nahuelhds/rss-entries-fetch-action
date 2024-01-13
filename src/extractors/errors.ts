@@ -1,7 +1,7 @@
 import { CustomError } from "ts-custom-error";
 
-import { ArticleData } from "../types/article-extractor";
-import { FeedData, FeedEntry } from "../types/feed-extractor";
+import { ArticleData } from "./types/article-extractor";
+import { FeedData, FeedEntry } from "./types/feed-extractor";
 
 export class FeedWithoutEntriesError extends CustomError {
   public constructor(

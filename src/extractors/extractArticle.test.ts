@@ -1,5 +1,3 @@
-import { ArticleData } from "../types/article-extractor";
-import { FeedEntry } from "../types/feed-extractor";
 import {
   ArticleNotFoundError,
   ArticleWithoutUrlError,
@@ -7,6 +5,8 @@ import {
 } from "./errors";
 import { extractArticle } from "./extractArticle";
 import { articleExtractor } from "./helpers";
+import { ArticleData } from "./types/article-extractor";
+import { FeedEntry } from "./types/feed-extractor";
 
 jest.mock("./helpers.ts", () => ({
   articleExtractor: jest.fn(),

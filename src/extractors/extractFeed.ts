@@ -1,6 +1,6 @@
-import { FeedData, FeedEntry } from "../types/feed-extractor";
 import { FeedWithoutEntriesError } from "./errors";
 import { feedExtractor } from "./helpers";
+import { FeedData, FeedEntry } from "./types/feed-extractor";
 
 type FeedWithEntries = FeedData & { entries: FeedEntry[] };
 

@@ -1,5 +1,5 @@
-import { ArticleExtractor } from "../types/article-extractor";
-import { FeedExtractor } from "../types/feed-extractor";
+import { ArticleExtractor } from "./types/article-extractor";
+import { FeedExtractor } from "./types/feed-extractor";
 
 export async function feedExtractor() {
   const feedExtractor = (await import(
