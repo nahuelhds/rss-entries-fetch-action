@@ -3,7 +3,7 @@ import { CustomError } from "ts-custom-error";
 import { extractArticle } from "../extractors/extractArticle";
 import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
-import { storeFile } from "../utils/fs";
+import { FileExistsError, storeFile } from "../utils/fs";
 import { buildFilename, getDestinationFolder } from "../utils/io";
 
 export async function processEntry(feedEntry: FeedEntry) {
@@ -20,6 +20,11 @@ export async function processEntry(feedEntry: FeedEntry) {
       destinationFile,
     );
   } catch (err) {
+    if (err instanceof FileExistsError) {
+      logger.debug(err.message);
+      return;
+    }
+
     if (err instanceof CustomError) {
       logger.warn(err.message);
       return;
