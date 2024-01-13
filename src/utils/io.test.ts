@@ -1,9 +1,9 @@
 import { InvalidUrlError, NoUrlsGivenError, ParseUrlsError } from "./errors";
-import { buildFilename, getInputFeedUrls, getOutputDir } from "./utils";
+import { buildFilename, getInputFeedUrls, getOutputDir } from "./io";
 
 const originalEnv = process.env;
 
-describe("utils", () => {
+describe("io", () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
   });
