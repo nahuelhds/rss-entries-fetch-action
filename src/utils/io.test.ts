@@ -1,5 +1,5 @@
 import { InvalidUrlError, NoUrlsGivenError, ParseUrlsError } from "./errors";
-import { buildFilename, getInputFeedUrls, getOutputDir } from "./io";
+import { buildFilename, getDestinationFolder, getInputFeedUrls } from "./io";
 
 const originalEnv = process.env;
 
@@ -46,16 +46,16 @@ describe("io", () => {
 
   describe("getOutputDir", () => {
     it.each([[undefined], [""]])(
-      "returns ./ if OUTPUT_FOLDER is %s",
+      "returns ./ if DESTINATION_FOLDER is %s",
       (falsyValue) => {
-        process.env.OUTPUT_FOLDER = falsyValue;
-        expect(getOutputDir()).toBe("./");
+        process.env.DESTINATION_FOLDER = falsyValue;
+        expect(getDestinationFolder()).toBe("./");
       },
     );
 
-    it("returns OUTPUT_FOLDER if it is set", () => {
-      process.env.OUTPUT_FOLDER = "./public";
-      expect(getOutputDir()).toBe("./public");
+    it("returns DESTINATION_FOLDER if it is set", () => {
+      process.env.DESTINATION_FOLDER = "./public";
+      expect(getDestinationFolder()).toBe("./public");
     });
   });
 

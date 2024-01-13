@@ -6,10 +6,10 @@ import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
 import { UnknownError } from "../utils/errors";
 import { storeFile } from "../utils/fs";
-import { buildFilename, getOutputDir } from "../utils/io";
+import { buildFilename, getDestinationFolder } from "../utils/io";
 
 export async function processEntry(feedEntry: FeedEntry) {
-  const outputDir = getOutputDir();
+  const outputDir = getDestinationFolder();
   try {
     const article = await extractArticle(feedEntry);
     const filename = buildFilename(article.url);

@@ -6,7 +6,7 @@ import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
 import { UnknownError } from "../utils/errors";
 import { storeFile } from "../utils/fs";
-import { buildFilename, getOutputDir } from "../utils/io";
+import { buildFilename, getDestinationFolder } from "../utils/io";
 import { processEntry } from "./processEntry";
 
 jest.mock("@actions/core");
@@ -51,7 +51,7 @@ describe("processEntry", () => {
     const article = { url: "https://www.google.com" } as ArticleWithUrl;
 
     const filename = buildFilename(article.url);
-    const destinationFile = `${getOutputDir()}/${filename}.json`;
+    const destinationFile = `${getDestinationFolder()}/${filename}.json`;
     const fileContents = JSON.stringify(article, null, 2);
     extractArticleMock.mockResolvedValue(article);
 

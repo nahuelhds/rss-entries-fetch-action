@@ -10,7 +10,7 @@ const logger: Logger = createLogger({
     format.splat(),
     format.json(),
   ),
-  defaultMeta: { service: "diffnews-entries-fetch" },
+  defaultMeta: { service: "rss-entries-fetch" },
   transports: [
     new transports.Console({
       format: format.combine(format.colorize(), format.simple()),

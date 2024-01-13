@@ -41,8 +41,8 @@ function parseInputFeedUrls(): string[] {
   throw new ParseUrlsError(feeds);
 }
 
-export function getOutputDir() {
-  return process.env.OUTPUT_FOLDER || "./";
+export function getDestinationFolder() {
+  return process.env.DESTINATION_FOLDER || "./";
 }
 
 export function buildFilename(url: string, outputLength = 40) {
