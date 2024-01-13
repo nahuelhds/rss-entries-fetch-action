@@ -3,6 +3,7 @@ description: "Traverses the entries from a RSS feed and saves it to a file"
 author: "Nahue <nahuelhds@gmail.com>"
 branding:
   icon: "rss"
+  color: purple
 
 inputs:
   feed_urls:
