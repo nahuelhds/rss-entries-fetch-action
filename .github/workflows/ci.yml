@@ -51,6 +51,10 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
+      - name: Check Format
+        id: npm-run-package
+        run: npm run package
+
       - name: Test Local Action
         id: test-action
         uses: ./
