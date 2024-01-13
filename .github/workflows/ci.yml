@@ -72,7 +72,3 @@ jobs:
         with:
           feed_urls: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
           destination_folder: "./test_ci"
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
