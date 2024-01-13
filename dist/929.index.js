@@ -9209,16 +9209,6 @@ function markDirtyUp(node) {
 }
 
 class Container extends Node {
-  get first() {
-    if (!this.proxyOf.nodes) return undefined
-    return this.proxyOf.nodes[0]
-  }
-
-  get last() {
-    if (!this.proxyOf.nodes) return undefined
-    return this.proxyOf.nodes[this.proxyOf.nodes.length - 1]
-  }
-
   append(...children) {
     for (let child of children) {
       let nodes = this.normalize(child, this.last)
@@ -9577,6 +9567,16 @@ class Container extends Node {
       }
     })
   }
+
+  get first() {
+    if (!this.proxyOf.nodes) return undefined
+    return this.proxyOf.nodes[0]
+  }
+
+  get last() {
+    if (!this.proxyOf.nodes) return undefined
+    return this.proxyOf.nodes[this.proxyOf.nodes.length - 1]
+  }
 }
 
 Container.registerParse = dependant => {
@@ -9934,10 +9934,6 @@ class Input {
     if (this.map) this.map.file = this.from
   }
 
-  get from() {
-    return this.file || this.id
-  }
-
   error(message, line, column, opts = {}) {
     let result, endLine, endColumn
 
@@ -10112,6 +10108,10 @@ class Input {
     }
     return json
   }
+
+  get from() {
+    return this.file || this.id
+  }
 }
 
 module.exports = Input
@@ -10281,38 +10281,6 @@ class LazyResult {
         return plugin
       }
     })
-  }
-
-  get content() {
-    return this.stringify().content
-  }
-
-  get css() {
-    return this.stringify().css
-  }
-
-  get map() {
-    return this.stringify().map
-  }
-
-  get messages() {
-    return this.sync().messages
-  }
-
-  get opts() {
-    return this.result.opts
-  }
-
-  get processor() {
-    return this.result.processor
-  }
-
-  get root() {
-    return this.sync().root
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'LazyResult'
   }
 
   async() {
@@ -10666,6 +10634,38 @@ class LazyResult {
 
   warnings() {
     return this.sync().warnings()
+  }
+
+  get content() {
+    return this.stringify().content
+  }
+
+  get css() {
+    return this.stringify().css
+  }
+
+  get map() {
+    return this.stringify().map
+  }
+
+  get messages() {
+    return this.sync().messages
+  }
+
+  get opts() {
+    return this.result.opts
+  }
+
+  get processor() {
+    return this.result.processor
+  }
+
+  get root() {
+    return this.sync().root
+  }
+
+  get [Symbol.toStringTag]() {
+    return 'LazyResult'
   }
 }
 
@@ -11161,6 +11161,46 @@ class NoWorkResult {
     }
   }
 
+  async() {
+    if (this.error) return Promise.reject(this.error)
+    return Promise.resolve(this.result)
+  }
+
+  catch(onRejected) {
+    return this.async().catch(onRejected)
+  }
+
+  finally(onFinally) {
+    return this.async().then(onFinally, onFinally)
+  }
+
+  sync() {
+    if (this.error) throw this.error
+    return this.result
+  }
+
+  then(onFulfilled, onRejected) {
+    if (process.env.NODE_ENV !== 'production') {
+      if (!('from' in this._opts)) {
+        warnOnce(
+          'Without `from` option PostCSS could generate wrong source map ' +
+            'and will not find Browserslist config. Set it to CSS file path ' +
+            'or to `undefined` to prevent this warning.'
+        )
+      }
+    }
+
+    return this.async().then(onFulfilled, onRejected)
+  }
+
+  toString() {
+    return this._css
+  }
+
+  warnings() {
+    return []
+  }
+
   get content() {
     return this.result.css
   }
@@ -11209,46 +11249,6 @@ class NoWorkResult {
 
   get [Symbol.toStringTag]() {
     return 'NoWorkResult'
-  }
-
-  async() {
-    if (this.error) return Promise.reject(this.error)
-    return Promise.resolve(this.result)
-  }
-
-  catch(onRejected) {
-    return this.async().catch(onRejected)
-  }
-
-  finally(onFinally) {
-    return this.async().then(onFinally, onFinally)
-  }
-
-  sync() {
-    if (this.error) throw this.error
-    return this.result
-  }
-
-  then(onFulfilled, onRejected) {
-    if (process.env.NODE_ENV !== 'production') {
-      if (!('from' in this._opts)) {
-        warnOnce(
-          'Without `from` option PostCSS could generate wrong source map ' +
-            'and will not find Browserslist config. Set it to CSS file path ' +
-            'or to `undefined` to prevent this warning.'
-        )
-      }
-    }
-
-    return this.async().then(onFulfilled, onRejected)
-  }
-
-  toString() {
-    return this._css
-  }
-
-  warnings() {
-    return []
   }
 }
 
@@ -11316,10 +11316,6 @@ class Node {
         this[name] = defaults[name]
       }
     }
-  }
-
-  get proxyOf() {
-    return this
   }
 
   addToError(error) {
@@ -11638,6 +11634,10 @@ class Node {
     let data = { node: this }
     for (let i in opts) data[i] = opts[i]
     return result.warn(text, data)
+  }
+
+  get proxyOf() {
+    return this
   }
 }
 
@@ -12667,10 +12667,6 @@ class Result {
     this.map = undefined
   }
 
-  get content() {
-    return this.css
-  }
-
   toString() {
     return this.css
   }
@@ -12690,6 +12686,10 @@ class Result {
 
   warnings() {
     return this.messages.filter(i => i.type === 'warning')
+  }
+
+  get content() {
+    return this.css
   }
 }
 
@@ -24781,6 +24781,15 @@ const getParentNodeCount = ({parentNode}) => {
  */
 class node_Node extends DOMEventTarget {
 
+  static get ELEMENT_NODE() { return constants_ELEMENT_NODE; }
+  static get ATTRIBUTE_NODE() { return constants_ATTRIBUTE_NODE; }
+  static get TEXT_NODE() { return constants_TEXT_NODE; }
+  static get CDATA_SECTION_NODE() { return constants_CDATA_SECTION_NODE; }
+  static get COMMENT_NODE() { return constants_COMMENT_NODE; }
+  static get DOCUMENT_NODE() { return constants_DOCUMENT_NODE; }
+  static get DOCUMENT_FRAGMENT_NODE() { return constants_DOCUMENT_FRAGMENT_NODE; }
+  static get DOCUMENT_TYPE_NODE() { return constants_DOCUMENT_TYPE_NODE; }
+
   constructor(ownerDocument, localName, nodeType) {
     super();
     this.ownerDocument = ownerDocument;
@@ -24790,22 +24799,6 @@ class node_Node extends DOMEventTarget {
     this[NEXT] = null;
     this[symbols_PREV] = null;
   }
-
-  static get ELEMENT_NODE() { return constants_ELEMENT_NODE; }
-
-  static get ATTRIBUTE_NODE() { return constants_ATTRIBUTE_NODE; }
-
-  static get TEXT_NODE() { return constants_TEXT_NODE; }
-
-  static get CDATA_SECTION_NODE() { return constants_CDATA_SECTION_NODE; }
-
-  static get COMMENT_NODE() { return constants_COMMENT_NODE; }
-
-  static get DOCUMENT_NODE() { return constants_DOCUMENT_NODE; }
-
-  static get DOCUMENT_FRAGMENT_NODE() { return constants_DOCUMENT_FRAGMENT_NODE; }
-
-  static get DOCUMENT_TYPE_NODE() { return constants_DOCUMENT_TYPE_NODE; }
 
   get ELEMENT_NODE() { return constants_ELEMENT_NODE; }
   get ATTRIBUTE_NODE() { return constants_ATTRIBUTE_NODE; }
@@ -25169,34 +25162,27 @@ class CharacterData extends node_Node {
   get previousElementSibling() { return previousElementSibling(this); }
   get nextElementSibling() { return non_document_type_child_node_nextElementSibling(this); }
 
+  before(...nodes) { before(this, nodes); }
+  after(...nodes) { after(this, nodes); }
+  replaceWith(...nodes) { replaceWith(this, nodes); }
+  remove() { remove(this[symbols_PREV], this, this[NEXT]); }
+  // </Mixins>
+
+  // CharacterData only
   /* c8 ignore start */
   get data() { return this[VALUE]; }
-
   set data(value) {
     this[VALUE] = $String(value);
     moCallback(this, this.parentNode);
   }
 
   get nodeValue() { return this.data; }
-
   set nodeValue(value) { this.data = value; }
-  // </Mixins>
-
-  // CharacterData only
 
   get textContent() { return this.data; }
-
   set textContent(value) { this.data = value; }
 
   get length() { return this.data.length; }
-
-  before(...nodes) { before(this, nodes); }
-
-  after(...nodes) { after(this, nodes); }
-
-  replaceWith(...nodes) { replaceWith(this, nodes); }
-
-  remove() { remove(this[symbols_PREV], this, this[NEXT]); }
 
   substringData(offset, count) {
     return this.data.substr(offset, count);
@@ -27455,8 +27441,6 @@ class CSSStyleDeclaration extends Map {
     css_style_declaration_refs.get(this).setAttribute('style', value);
   }
 
-  get[PRIVATE]() { return this; }
-
   getPropertyValue(name) {
     const self = this[PRIVATE];
     return css_style_declaration_handler.get(self, name);
@@ -27485,6 +27469,8 @@ class CSSStyleDeclaration extends Map {
       }
     };
   }
+
+  get[PRIVATE]() { return this; }
 
   toString() {
     const self = this[PRIVATE];
@@ -27517,6 +27503,11 @@ const NONE = 0;
  * @implements globalThis.Event
  */
 class GlobalEvent {
+    static get BUBBLING_PHASE() { return BUBBLING_PHASE; }
+    static get AT_TARGET() { return AT_TARGET; }
+    static get CAPTURING_PHASE() { return CAPTURING_PHASE; }
+    static get NONE() { return NONE; }
+
     constructor(type, eventInitDict = {}) {
       this.type = type;
       this.bubbles = !!eventInitDict.bubbles;
@@ -27532,14 +27523,6 @@ class GlobalEvent {
       this.target = null;
       this._path = [];
     }
-
-    static get BUBBLING_PHASE() { return BUBBLING_PHASE; }
-
-    static get AT_TARGET() { return AT_TARGET; }
-
-    static get CAPTURING_PHASE() { return CAPTURING_PHASE; }
-
-    static get NONE() { return NONE; }
 
     get BUBBLING_PHASE() { return BUBBLING_PHASE; }
     get AT_TARGET() { return AT_TARGET; }
@@ -27711,22 +27694,35 @@ class element_Element extends ParentNode {
   get previousElementSibling() { return previousElementSibling(this); }
   get nextElementSibling() { return non_document_type_child_node_nextElementSibling(this); }
 
+  // <ShadowDOM>
+  get shadowRoot() {
+    if (shadowRoots.has(this)) {
+      const {mode, shadowRoot} = shadowRoots.get(this);
+      if (mode === 'open')
+        return shadowRoot;
+    }
+    return null;
+  }
+
+  before(...nodes) { before(this, nodes); }
+
+  after(...nodes) { after(this, nodes); }
+
+  replaceWith(...nodes) { replaceWith(this, nodes); }
+  // </Mixins>
+
   // <specialGetters>
   get id() { return stringAttribute.get(this, 'id'); }
-
   set id(value) { stringAttribute.set(this, 'id', value); }
 
   get className() { return this.classList.value; }
-
   set className(value) {
     const {classList} = this;
     classList.clear();
     classList.add(...($String(value).split(/\s+/)));
   }
-  // </Mixins>
 
   get nodeName() { return localCase(this); }
-
   get tagName() { return localCase(this); }
 
   get classList() {
@@ -27741,8 +27737,9 @@ class element_Element extends ParentNode {
     );
   }
 
-  get nonce() { return stringAttribute.get(this, 'nonce'); }
+  remove() { remove(this[symbols_PREV], this, this[symbols_END][NEXT]); }
 
+  get nonce() { return stringAttribute.get(this, 'nonce'); }
   set nonce(value) { stringAttribute.set(this, 'nonce', value); }
 
   get style() {
@@ -27752,12 +27749,12 @@ class element_Element extends ParentNode {
   }
 
   get tabIndex() { return numericAttribute.get(this, 'tabindex') || -1; }
-
   set tabIndex(value) { numericAttribute.set(this, 'tabindex', value); }
 
   get slot() { return stringAttribute.get(this, 'slot'); }
-
   set slot(value) { stringAttribute.set(this, 'slot', value); }
+  // </specialGetters>
+
 
   // <contentRelated>
   get innerText() {
@@ -27800,19 +27797,17 @@ class element_Element extends ParentNode {
   get innerHTML() {
     return getInnerHtml(this);
   }
-
   set innerHTML(html) {
     setInnerHtml(this, html);
   }
-  // </specialGetters>
 
   get outerHTML() { return this.toString(); }
-
   set outerHTML(html) {
     const template = this.ownerDocument.createElement('');
     template.innerHTML = html;
     this.replaceWith(...template.childNodes);
   }
+  // </contentRelated>
 
   // <attributes>
   get attributes() {
@@ -27823,38 +27818,6 @@ class element_Element extends ParentNode {
       next = next[NEXT];
     }
     return new Proxy(attributes, attributesHandler);
-  }
-
-  // <ShadowDOM>
-  get shadowRoot() {
-    if (shadowRoots.has(this)) {
-      const {mode, shadowRoot} = shadowRoots.get(this);
-      if (mode === 'open')
-        return shadowRoot;
-    }
-    return null;
-  }
-
-  before(...nodes) { before(this, nodes); }
-
-  after(...nodes) { after(this, nodes); }
-
-  replaceWith(...nodes) { replaceWith(this, nodes); }
-  // </contentRelated>
-
-  remove() { remove(this[symbols_PREV], this, this[symbols_END][NEXT]); }
-
-  getBoundingClientRect() {
-    return {
-      x: 0,
-      y: 0,
-      bottom: 0,
-      height: 0,
-      left: 0,
-      right: 0,
-      top: 0,
-      width: 0
-    };
   }
 
   focus() { this.dispatchEvent(new GlobalEvent('focus')); }
@@ -27887,7 +27850,6 @@ class element_Element extends ParentNode {
   }
 
   hasAttribute(name) { return !!this.getAttributeNode(name); }
-
   hasAttributes() { return this[NEXT].nodeType === constants_ATTRIBUTE_NODE; }
 
   removeAttribute(name) {
@@ -27939,7 +27901,6 @@ class element_Element extends ParentNode {
     }
     return previously;
   }
-  // </attributes>
 
   toggleAttribute(name, force) {
     if (this.hasAttribute(name)) {
@@ -27954,6 +27915,20 @@ class element_Element extends ParentNode {
       return true;
     }
     return false;
+  }
+  // </attributes>
+
+  getBoundingClientRect() {
+    return {
+      x: 0,
+      y: 0,
+      bottom: 0,
+      height: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+      width: 0
+    };
   }
 
   attachShadow(init) {
@@ -28307,6 +28282,8 @@ const level0 = {
  */
 class element_HTMLElement extends element_Element {
 
+  static get observedAttributes() { return []; }
+
   constructor(ownerDocument = null, localName = '') {
     super(ownerDocument, localName);
 
@@ -28337,8 +28314,6 @@ class element_HTMLElement extends element_Element {
     }
   }
 
-  static get observedAttributes() { return []; }
-
   /* c8 ignore start */
 
   /* TODO: what about these?
@@ -28349,332 +28324,246 @@ class element_HTMLElement extends element_Element {
   offsetWidth
   */
 
+  blur() { this.dispatchEvent(new GlobalEvent('blur')); }
+  click() { this.dispatchEvent(new GlobalEvent('click')); }
+
   // Boolean getters
   get accessKeyLabel() {
     const {accessKey} = this;
     return accessKey && `Alt+Shift+${accessKey}`;
   }
-
   get isContentEditable() { return this.hasAttribute('contenteditable'); }
 
   // Boolean Accessors
   get contentEditable() { return booleanAttribute.get(this, 'contenteditable'); }
-
   set contentEditable(value) { booleanAttribute.set(this, 'contenteditable', value); }
-
   get draggable() { return booleanAttribute.get(this, 'draggable'); }
-
   set draggable(value) { booleanAttribute.set(this, 'draggable', value); }
-
   get hidden() { return booleanAttribute.get(this, 'hidden'); }
-
   set hidden(value) { booleanAttribute.set(this, 'hidden', value); }
-
   get spellcheck() { return booleanAttribute.get(this, 'spellcheck'); }
-
   set spellcheck(value) { booleanAttribute.set(this, 'spellcheck', value); }
 
   // String Accessors
   get accessKey() { return stringAttribute.get(this, 'accesskey'); }
-
   set accessKey(value) { stringAttribute.set(this, 'accesskey', value); }
-
   get dir() { return stringAttribute.get(this, 'dir'); }
-
   set dir(value) { stringAttribute.set(this, 'dir', value); }
-
   get lang() { return stringAttribute.get(this, 'lang'); }
-
   set lang(value) { stringAttribute.set(this, 'lang', value); }
-
   get title() { return stringAttribute.get(this, 'title'); }
-
   set title(value) { stringAttribute.set(this, 'title', value); }
 
   // DOM Level 0
   get onabort() { return level0.get(this, 'onabort'); }
-
   set onabort(value) { level0.set(this, 'onabort', value); }
 
   get onblur() { return level0.get(this, 'onblur'); }
-
   set onblur(value) { level0.set(this, 'onblur', value); }
 
   get oncancel() { return level0.get(this, 'oncancel'); }
-
   set oncancel(value) { level0.set(this, 'oncancel', value); }
 
   get oncanplay() { return level0.get(this, 'oncanplay'); }
-
   set oncanplay(value) { level0.set(this, 'oncanplay', value); }
 
   get oncanplaythrough() { return level0.get(this, 'oncanplaythrough'); }
-
   set oncanplaythrough(value) { level0.set(this, 'oncanplaythrough', value); }
 
   get onchange() { return level0.get(this, 'onchange'); }
-
   set onchange(value) { level0.set(this, 'onchange', value); }
 
   get onclick() { return level0.get(this, 'onclick'); }
-
   set onclick(value) { level0.set(this, 'onclick', value); }
 
   get onclose() { return level0.get(this, 'onclose'); }
-
   set onclose(value) { level0.set(this, 'onclose', value); }
 
   get oncontextmenu() { return level0.get(this, 'oncontextmenu'); }
-
   set oncontextmenu(value) { level0.set(this, 'oncontextmenu', value); }
 
   get oncuechange() { return level0.get(this, 'oncuechange'); }
-
   set oncuechange(value) { level0.set(this, 'oncuechange', value); }
 
   get ondblclick() { return level0.get(this, 'ondblclick'); }
-
   set ondblclick(value) { level0.set(this, 'ondblclick', value); }
 
   get ondrag() { return level0.get(this, 'ondrag'); }
-
   set ondrag(value) { level0.set(this, 'ondrag', value); }
 
   get ondragend() { return level0.get(this, 'ondragend'); }
-
   set ondragend(value) { level0.set(this, 'ondragend', value); }
 
   get ondragenter() { return level0.get(this, 'ondragenter'); }
-
   set ondragenter(value) { level0.set(this, 'ondragenter', value); }
 
   get ondragleave() { return level0.get(this, 'ondragleave'); }
-
   set ondragleave(value) { level0.set(this, 'ondragleave', value); }
 
   get ondragover() { return level0.get(this, 'ondragover'); }
-
   set ondragover(value) { level0.set(this, 'ondragover', value); }
 
   get ondragstart() { return level0.get(this, 'ondragstart'); }
-
   set ondragstart(value) { level0.set(this, 'ondragstart', value); }
 
   get ondrop() { return level0.get(this, 'ondrop'); }
-
   set ondrop(value) { level0.set(this, 'ondrop', value); }
 
   get ondurationchange() { return level0.get(this, 'ondurationchange'); }
-
   set ondurationchange(value) { level0.set(this, 'ondurationchange', value); }
 
   get onemptied() { return level0.get(this, 'onemptied'); }
-
   set onemptied(value) { level0.set(this, 'onemptied', value); }
 
   get onended() { return level0.get(this, 'onended'); }
-
   set onended(value) { level0.set(this, 'onended', value); }
 
   get onerror() { return level0.get(this, 'onerror'); }
-
   set onerror(value) { level0.set(this, 'onerror', value); }
 
   get onfocus() { return level0.get(this, 'onfocus'); }
-
   set onfocus(value) { level0.set(this, 'onfocus', value); }
 
   get oninput() { return level0.get(this, 'oninput'); }
-
   set oninput(value) { level0.set(this, 'oninput', value); }
 
   get oninvalid() { return level0.get(this, 'oninvalid'); }
-
   set oninvalid(value) { level0.set(this, 'oninvalid', value); }
 
   get onkeydown() { return level0.get(this, 'onkeydown'); }
-
   set onkeydown(value) { level0.set(this, 'onkeydown', value); }
 
   get onkeypress() { return level0.get(this, 'onkeypress'); }
-
   set onkeypress(value) { level0.set(this, 'onkeypress', value); }
 
   get onkeyup() { return level0.get(this, 'onkeyup'); }
-
   set onkeyup(value) { level0.set(this, 'onkeyup', value); }
 
   get onload() { return level0.get(this, 'onload'); }
-
   set onload(value) { level0.set(this, 'onload', value); }
 
   get onloadeddata() { return level0.get(this, 'onloadeddata'); }
-
   set onloadeddata(value) { level0.set(this, 'onloadeddata', value); }
 
   get onloadedmetadata() { return level0.get(this, 'onloadedmetadata'); }
-
   set onloadedmetadata(value) { level0.set(this, 'onloadedmetadata', value); }
 
   get onloadstart() { return level0.get(this, 'onloadstart'); }
-
   set onloadstart(value) { level0.set(this, 'onloadstart', value); }
 
   get onmousedown() { return level0.get(this, 'onmousedown'); }
-
   set onmousedown(value) { level0.set(this, 'onmousedown', value); }
 
   get onmouseenter() { return level0.get(this, 'onmouseenter'); }
-
   set onmouseenter(value) { level0.set(this, 'onmouseenter', value); }
 
   get onmouseleave() { return level0.get(this, 'onmouseleave'); }
-
   set onmouseleave(value) { level0.set(this, 'onmouseleave', value); }
 
   get onmousemove() { return level0.get(this, 'onmousemove'); }
-
   set onmousemove(value) { level0.set(this, 'onmousemove', value); }
 
   get onmouseout() { return level0.get(this, 'onmouseout'); }
-
   set onmouseout(value) { level0.set(this, 'onmouseout', value); }
 
   get onmouseover() { return level0.get(this, 'onmouseover'); }
-
   set onmouseover(value) { level0.set(this, 'onmouseover', value); }
 
   get onmouseup() { return level0.get(this, 'onmouseup'); }
-
   set onmouseup(value) { level0.set(this, 'onmouseup', value); }
 
   get onmousewheel() { return level0.get(this, 'onmousewheel'); }
-
   set onmousewheel(value) { level0.set(this, 'onmousewheel', value); }
 
   get onpause() { return level0.get(this, 'onpause'); }
-
   set onpause(value) { level0.set(this, 'onpause', value); }
 
   get onplay() { return level0.get(this, 'onplay'); }
-
   set onplay(value) { level0.set(this, 'onplay', value); }
 
   get onplaying() { return level0.get(this, 'onplaying'); }
-
   set onplaying(value) { level0.set(this, 'onplaying', value); }
 
   get onprogress() { return level0.get(this, 'onprogress'); }
-
   set onprogress(value) { level0.set(this, 'onprogress', value); }
 
   get onratechange() { return level0.get(this, 'onratechange'); }
-
   set onratechange(value) { level0.set(this, 'onratechange', value); }
 
   get onreset() { return level0.get(this, 'onreset'); }
-
   set onreset(value) { level0.set(this, 'onreset', value); }
 
   get onresize() { return level0.get(this, 'onresize'); }
-
   set onresize(value) { level0.set(this, 'onresize', value); }
 
   get onscroll() { return level0.get(this, 'onscroll'); }
-
   set onscroll(value) { level0.set(this, 'onscroll', value); }
 
   get onseeked() { return level0.get(this, 'onseeked'); }
-
   set onseeked(value) { level0.set(this, 'onseeked', value); }
 
   get onseeking() { return level0.get(this, 'onseeking'); }
-
   set onseeking(value) { level0.set(this, 'onseeking', value); }
 
   get onselect() { return level0.get(this, 'onselect'); }
-
   set onselect(value) { level0.set(this, 'onselect', value); }
 
   get onshow() { return level0.get(this, 'onshow'); }
-
   set onshow(value) { level0.set(this, 'onshow', value); }
 
   get onstalled() { return level0.get(this, 'onstalled'); }
-
   set onstalled(value) { level0.set(this, 'onstalled', value); }
 
   get onsubmit() { return level0.get(this, 'onsubmit'); }
-
   set onsubmit(value) { level0.set(this, 'onsubmit', value); }
 
   get onsuspend() { return level0.get(this, 'onsuspend'); }
-
   set onsuspend(value) { level0.set(this, 'onsuspend', value); }
 
   get ontimeupdate() { return level0.get(this, 'ontimeupdate'); }
-
   set ontimeupdate(value) { level0.set(this, 'ontimeupdate', value); }
 
   get ontoggle() { return level0.get(this, 'ontoggle'); }
-
   set ontoggle(value) { level0.set(this, 'ontoggle', value); }
 
   get onvolumechange() { return level0.get(this, 'onvolumechange'); }
-
   set onvolumechange(value) { level0.set(this, 'onvolumechange', value); }
 
   get onwaiting() { return level0.get(this, 'onwaiting'); }
-
   set onwaiting(value) { level0.set(this, 'onwaiting', value); }
 
   get onauxclick() { return level0.get(this, 'onauxclick'); }
-
   set onauxclick(value) { level0.set(this, 'onauxclick', value); }
 
   get ongotpointercapture() { return level0.get(this, 'ongotpointercapture'); }
-
   set ongotpointercapture(value) { level0.set(this, 'ongotpointercapture', value); }
 
   get onlostpointercapture() { return level0.get(this, 'onlostpointercapture'); }
-
   set onlostpointercapture(value) { level0.set(this, 'onlostpointercapture', value); }
 
   get onpointercancel() { return level0.get(this, 'onpointercancel'); }
-
   set onpointercancel(value) { level0.set(this, 'onpointercancel', value); }
 
   get onpointerdown() { return level0.get(this, 'onpointerdown'); }
-
   set onpointerdown(value) { level0.set(this, 'onpointerdown', value); }
 
   get onpointerenter() { return level0.get(this, 'onpointerenter'); }
-
   set onpointerenter(value) { level0.set(this, 'onpointerenter', value); }
 
   get onpointerleave() { return level0.get(this, 'onpointerleave'); }
-
   set onpointerleave(value) { level0.set(this, 'onpointerleave', value); }
 
   get onpointermove() { return level0.get(this, 'onpointermove'); }
-
   set onpointermove(value) { level0.set(this, 'onpointermove', value); }
 
   get onpointerout() { return level0.get(this, 'onpointerout'); }
-
   set onpointerout(value) { level0.set(this, 'onpointerout', value); }
 
   get onpointerover() { return level0.get(this, 'onpointerover'); }
-
   set onpointerover(value) { level0.set(this, 'onpointerover', value); }
 
   get onpointerup() { return level0.get(this, 'onpointerup'); }
-
   set onpointerup(value) { level0.set(this, 'onpointerup', value); }
-
-  blur() { this.dispatchEvent(new GlobalEvent('blur')); }
-
-  click() { this.dispatchEvent(new GlobalEvent('click')); }
   /* c8 ignore stop */
 
 }

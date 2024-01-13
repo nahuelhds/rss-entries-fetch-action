@@ -16,7 +16,9 @@ export async function processFeed(feedUrl: URL) {
       return;
     }
 
-    setFailed(new UnknownError(err).message);
+    const unknownError = new UnknownError(err);
+    logger.error(unknownError.message, unknownError);
+    setFailed(unknownError.message);
     return;
   }
 }

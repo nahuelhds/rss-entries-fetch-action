@@ -27,7 +27,9 @@ export async function processEntry(feedEntry: FeedEntry) {
       return;
     }
 
-    setFailed(new UnknownError(err).message);
+    const unknownError = new UnknownError(err);
+    logger.error(unknownError.message, unknownError);
+    setFailed(unknownError.message);
     return;
   }
 }

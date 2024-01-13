@@ -17743,7 +17743,9 @@ async function processEntry(feedEntry) {
             logger_1.default.warn(err.message);
             return;
         }
-        (0, core_1.setFailed)(new errors_1.UnknownError(err).message);
+        const unknownError = new errors_1.UnknownError(err);
+        logger_1.default.error(unknownError.message, unknownError);
+        (0, core_1.setFailed)(unknownError.message);
         return;
     }
 }
@@ -17778,7 +17780,9 @@ async function processFeed(feedUrl) {
             logger_1.default.warn(err.message);
             return;
         }
-        (0, core_1.setFailed)(new errors_1.UnknownError(err).message);
+        const unknownError = new errors_1.UnknownError(err);
+        logger_1.default.error(unknownError.message, unknownError);
+        (0, core_1.setFailed)(unknownError.message);
         return;
     }
 }
