@@ -29,7 +29,7 @@ function jsonParseOrFallback(inputValue: string) {
 }
 
 function parseInputFeedUrls(): string[] {
-  const inputValue = process.env.INPUT_INPUT_FEED_URLS ?? "";
+  const inputValue = process.env.INPUT_FEED_URLS ?? "";
   const feeds: unknown = jsonParseOrFallback(inputValue);
 
   if (Array.isArray(feeds)) {
