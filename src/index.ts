@@ -2,6 +2,6 @@
  * The entrypoint for the action.
  */
 
-import { fetchEntries } from "./main";
+import { runAction } from "./main";
 
-void fetchEntries();
+void runAction();

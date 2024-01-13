@@ -2,7 +2,7 @@ import { FeedWithoutEntriesError } from "./errors";
 import { feedExtractor } from "./helpers";
 import { FeedData, FeedEntry } from "./types/feed-extractor";
 
-type FeedWithEntries = FeedData & { entries: FeedEntry[] };
+export type FeedWithEntries = FeedData & { entries: FeedEntry[] };
 
 export async function extractFeed(feedUrl: URL) {
   const extract = await feedExtractor();

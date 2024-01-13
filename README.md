@@ -56,7 +56,7 @@ need to perform some initial setup steps before you can develop your action.
 1. :building_construction: Package the TypeScript for distribution
 
    ```bash
-   npm fetchEntries bundle
+   npm runAction bundle
    ```
 
 1. :white_check_mark: Run the tests
@@ -84,19 +84,19 @@ inputs, and outputs for your action.
 ## Update the Action Code
 
 The [`src/`](./src/) directory is the heart of your action! This contains the
-source code that will be fetchEntries when your action is invoked. You can replace the
+source code that will be runAction when your action is invoked. You can replace the
 contents of this directory with your own code.
 
 There are a few things to keep in mind when writing your action code:
 
 - Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
-  In `main.ts`, you will see that the action is fetchEntries in an `async` function.
+  In `main.ts`, you will see that the action is runAction in an `async` function.
 
   ```javascript
   import * as core from '@actions/core'
   //...
 
-  async function fetchEntries() {
+  async function runAction() {
     try {
       //...
     } catch (error) {
@@ -121,14 +121,14 @@ So, what are you waiting for? Go ahead and start customizing your action!
 1. Format, test, and build the action
 
    ```bash
-   npm fetchEntries all
+   npm runAction all
    ```
 
    > [!WARNING]
    >
-   > This step is important! It will fetchEntries [`ncc`](https://github.com/vercel/ncc)
+   > This step is important! It will runAction [`ncc`](https://github.com/vercel/ncc)
    > to build the final JavaScript action code with all dependencies included.
-   > If you do not fetchEntries this step, your action will not work correctly when it is
+   > If you do not runAction this step, your action will not work correctly when it is
    > used in a workflow. This step also includes the `--license` option for
    > `ncc`, which will create a license file for all of the production node
    > modules used in your project.
@@ -175,7 +175,7 @@ steps:
 
   - name: Print Output
     id: output
-    fetchEntries: echo "${{ steps.test-action.outputs.time }}"
+    runAction: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 For example workflow runs, check out the
@@ -206,7 +206,7 @@ steps:
 
   - name: Print Output
     id: output
-    fetchEntries: echo "${{ steps.test-action.outputs.time }}"
+    runAction: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 ## Publishing a new release

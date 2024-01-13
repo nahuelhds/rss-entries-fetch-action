@@ -4,13 +4,13 @@
 
 import * as main from "./main";
 
-jest.spyOn(main, "fetchEntries");
+jest.spyOn(main, "runAction");
 
 describe("index", () => {
   it("calls run when imported", async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require("./index");
 
-    expect(main.fetchEntries).toHaveBeenCalled();
+    expect(main.runAction).toHaveBeenCalled();
   });
 });

@@ -7,9 +7,7 @@ describe("io", () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
   });
-  afterEach(() => {
-    jest.resetModules();
-  });
+
   describe("getInputFeedUrls", () => {
     it("throws NoUrlsGivenError if INPUT_FEED_URL is an empty string", () => {
       process.env.INPUT_FEED_URL = "";
