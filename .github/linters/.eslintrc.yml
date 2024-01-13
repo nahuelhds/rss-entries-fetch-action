@@ -8,24 +8,24 @@ globals:
   SharedArrayBuffer: readonly
 
 ignorePatterns:
-  - '!.*'
-  - '**/node_modules/.*'
-  - '**/dist/.*'
-  - '**/coverage/.*'
-  - '*.json'
+  - "!.*"
+  - "**/node_modules/.*"
+  - "**/dist/.*"
+  - "**/coverage/.*"
+  - "*.json"
 
-parser: '@typescript-eslint/parser'
+parser: "@typescript-eslint/parser"
 
 parserOptions:
   ecmaVersion: 2023
   sourceType: module
   project:
-    - './.github/linters/tsconfig.json'
-    - './tsconfig.json'
+    - "./.github/linters/tsconfig.json"
+    - "./tsconfig.json"
 
 plugins:
   - jest
-  - '@typescript-eslint'
+  - "@typescript-eslint"
   - "simple-import-sort"
   - "import"
 
@@ -41,5 +41,5 @@ rules:
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
   }

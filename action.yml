@@ -1,15 +1,15 @@
-name: 'RSS Feed Entries Fetch Action'
-description: 'Traverses the entries from a RSS feed and saves it to a file'
-author: 'Nahue <nahuelhds@gmail.com>'
+name: "RSS Feed Entries Fetch Action"
+description: "Traverses the entries from a RSS feed and saves it to a file"
+author: "Nahue <nahuelhds@gmail.com>"
 branding:
-  icon: 'rss'
+  icon: "rss"
 
 inputs:
   feed_urls:
-    description: 'URL or JSON array of URLs of the RSS feed(s) to fetch'
+    description: "URL or JSON array of URLs of the RSS feed(s) to fetch"
     required: true
   destination_folder:
-    description: 'Relative file path where to store the found articles'
+    description: "Relative file path where to store the found articles"
     required: true
 
 runs:

@@ -54,7 +54,7 @@ jobs:
       - name: Commit and push changes to repository
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 'Update RSS articles'
+          commit_message: "Update RSS articles"
 ```
 
 In this workflow, we fetch the [New York Times RSS](https://rss.nytimes.com/services/xml/rss/nyt/World.xml) feed and save all the

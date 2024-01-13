@@ -15,10 +15,5 @@
     "skipLibCheck": true,
     "newLine": "lf"
   },
-  "exclude": [
-    "./dist",
-    "./node_modules",
-    "./coverage",
-    "./**/*.spec.ts"
-  ]
+  "exclude": ["./dist", "./node_modules", "./coverage", "./**/*.spec.ts"]
 }
