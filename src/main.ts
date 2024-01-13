@@ -1,6 +1,7 @@
 import { setFailed } from "@actions/core";
 import { CustomError } from "ts-custom-error";
 
+import logger from "./logger";
 import { processFeed } from "./processors/processFeed";
 import { UnknownError } from "./utils/errors";
 import { getInputFeedUrls } from "./utils/io";
@@ -16,7 +17,9 @@ export async function runAction() {
       return;
     }
 
-    setFailed(new UnknownError(err).message);
+    const unknownError = new UnknownError(err);
+    logger.error(unknownError.message, unknownError);
+    setFailed(unknownError.message);
     return;
   }
 }
