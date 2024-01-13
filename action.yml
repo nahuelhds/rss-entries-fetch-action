@@ -5,7 +5,7 @@ branding:
   icon: 'rss'
 
 inputs:
-  feed_url:
+  feed_urls:
     description: 'URL or JSON array of URLs of the RSS feed(s) to fetch'
     required: true
   destination_folder:
