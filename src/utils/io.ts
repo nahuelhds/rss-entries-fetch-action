@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import { InvalidUrlError, ParseUrlsError } from "./errors";
+import { InvalidUrlError, NoUrlsGivenError, ParseUrlsError } from "./errors";
 
 export function getInputFeedUrls(): URL[] {
   return parseInputFeedUrls().map((url) => {
@@ -12,33 +12,42 @@ export function getInputFeedUrls(): URL[] {
   });
 }
 
-function parseInputFeedUrls(): string[] {
-  const inputValue = process.env.INPUT_FEED_URL ?? "";
+function jsonParseOrFallback(inputValue: string) {
   try {
     // Try to parse the feed URL as JSON. This will work if it's an array or single URL
-    const feeds = JSON.parse(inputValue);
-    if (Array.isArray(feeds)) {
-      return feeds;
-    }
-
-    return [feeds];
+    return JSON.parse(inputValue);
   } catch (err) {
     // If JSON.parse fails, assume feed is a regular string (single URL) and wrap it in an array
     if (inputValue !== "") {
-      return [process.env.INPUT_FEED_URL ?? ""];
+      return [inputValue];
     }
 
-    throw new ParseUrlsError(inputValue, err);
+    throw new NoUrlsGivenError(err);
   }
 }
 
-export function getOutputDir() {
-  return process.env.OUTPUT_FOLDER ?? "./";
+function parseInputFeedUrls(): string[] {
+  const inputValue = process.env.INPUT_FEED_URL ?? "";
+  const feeds: unknown = jsonParseOrFallback(inputValue);
+
+  if (Array.isArray(feeds)) {
+    return feeds;
+  }
+
+  if (typeof feeds === "string") {
+    return [feeds];
+  }
+
+  throw new ParseUrlsError(feeds);
+}
+
+export function getDestinationFolder() {
+  return process.env.DESTINATION_FOLDER || "./";
 }
 
 export function buildFilename(url: string, outputLength = 40) {
   return crypto
     .createHash("shake256", { outputLength })
     .update(url)
-    .digest("hex");
+    .digest("base64url");
 }

@@ -2,6 +2,6 @@
  * The entrypoint for the action.
  */
 
-import { run } from "./main";
+import { runAction } from "./main";
 
-void run();
+void runAction();
