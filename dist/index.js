@@ -17756,6 +17756,10 @@ async function processEntry(feedEntry) {
         logger_1.default.info(`New article stored: "%s". Path: "%s"`, article.url, destinationFile);
     }
     catch (err) {
+        if (err instanceof fs_1.FileExistsError) {
+            logger_1.default.debug(err.message);
+            return;
+        }
         if (err instanceof ts_custom_error_1.CustomError) {
             logger_1.default.warn(err.message);
             return;
