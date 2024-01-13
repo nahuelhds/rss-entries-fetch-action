@@ -1,6 +1,5 @@
 import crypto from "crypto";
 
-import logger from "../logger";
 import { InvalidUrlError, NoUrlsGivenError, ParseUrlsError } from "./errors";
 
 export function getInputFeedUrls(): URL[] {
@@ -14,7 +13,6 @@ export function getInputFeedUrls(): URL[] {
 }
 
 function jsonParseOrFallback(inputValue: string) {
-  logger.info(`Parsing %s`, inputValue);
   try {
     // Try to parse the feed URL as JSON. This will work if it's an array or single URL
     return JSON.parse(inputValue);
