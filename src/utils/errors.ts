@@ -14,7 +14,7 @@ export class InvalidUrlError extends CustomError {
 
 export class NoUrlsGivenError extends CustomError {
   public constructor(cause: unknown) {
-    super(`No URL has given`, { cause });
+    super(`No URL given`, { cause });
     // Set name explicitly as minification can mangle class names
     Object.defineProperty(this, "name", { value: "NoUrlsGivenError" });
   }

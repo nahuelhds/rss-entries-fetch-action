@@ -62,7 +62,7 @@ jobs:
         id: npm-ci
         run: npm ci
 
-      - name: Check Format
+      - name: Package
         id: npm-run-package
         run: npm run package
 
