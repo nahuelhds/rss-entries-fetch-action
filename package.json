@@ -1,16 +1,16 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
+  "name": "rss-entries-fetch-action",
+  "description": "Traverses the entries from a RSS feed and saves it to a file",
   "version": "0.0.0",
   "author": "",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/nahuelhds/rss-entries-fetch-action#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/nahuelhds/rss-entries-fetch-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/nahuelhds/rss-entries-fetch-action/issues"
   },
   "keywords": [
     "actions",
