@@ -56,7 +56,7 @@ need to perform some initial setup steps before you can develop your action.
 1. :building_construction: Package the TypeScript for distribution
 
    ```bash
-   npm runAction bundle
+   npm run bundle
    ```
 
 1. :white_check_mark: Run the tests
@@ -121,7 +121,7 @@ So, what are you waiting for? Go ahead and start customizing your action!
 1. Format, test, and build the action
 
    ```bash
-   npm runAction all
+   npm run all
    ```
 
    > [!WARNING]
@@ -200,7 +200,7 @@ steps:
 
   - name: Test Local Action
     id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
+    uses: nahuelhds/rss-entries-fecth-action@v1 # Commit with the `v1` tag
     with:
       milliseconds: 1000
 
