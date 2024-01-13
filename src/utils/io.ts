@@ -29,7 +29,7 @@ function jsonParseOrFallback(inputValue: string) {
 }
 
 function parseInputFeedUrls(): string[] {
-  const inputValue = process.env.FEED_URLS ?? "";
+  const inputValue = process.env.INPUT_INPUT_FEED_URLS ?? "";
   const feeds: unknown = jsonParseOrFallback(inputValue);
 
   if (Array.isArray(feeds)) {
@@ -44,7 +44,7 @@ function parseInputFeedUrls(): string[] {
 }
 
 export function getDestinationFolder() {
-  return process.env.DESTINATION_FOLDER || "./";
+  return process.env.INPUT_DESTINATION_FOLDER || "./";
 }
 
 export function buildFilename(url: string, outputLength = 40) {
