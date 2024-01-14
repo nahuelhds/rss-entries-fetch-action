@@ -34,7 +34,7 @@
     "package": "ncc build src/index.ts --license LICENSE",
     "package:watch": "npm run package -- --watch",
     "test": "jest --coverage",
-    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package && npm run format:write"
   },
   "license": "MIT",
   "jest": {

@@ -3089,29 +3089,6 @@ class Agent extends http.Agent {
         super(opts);
         this[INTERNAL] = {};
     }
-
-    get defaultPort() {
-        return (this[INTERNAL].defaultPort ??
-            (this.protocol === 'https:' ? 443 : 80));
-    }
-
-    set defaultPort(v) {
-        if (this[INTERNAL]) {
-            this[INTERNAL].defaultPort = v;
-        }
-    }
-
-    get protocol() {
-        return (this[INTERNAL].protocol ??
-            (this.isSecureEndpoint() ? 'https:' : 'http:'));
-    }
-
-    set protocol(v) {
-        if (this[INTERNAL]) {
-            this[INTERNAL].protocol = v;
-        }
-    }
-
     /**
      * Determine whether this is an `http` or `https` request.
      */
@@ -3141,7 +3118,6 @@ class Agent extends http.Agent {
             .some((l) => l.indexOf('(https.js:') !== -1 ||
             l.indexOf('node:https:') !== -1);
     }
-
     createSocket(req, options, cb) {
         const connectOpts = {
             ...options,
@@ -3159,7 +3135,6 @@ class Agent extends http.Agent {
             super.createSocket(req, options, cb);
         }, cb);
     }
-
     createConnection() {
         const socket = this[INTERNAL].currentSocket;
         this[INTERNAL].currentSocket = undefined;
@@ -3167,6 +3142,24 @@ class Agent extends http.Agent {
             throw new Error('No socket was returned in the `connect()` function');
         }
         return socket;
+    }
+    get defaultPort() {
+        return (this[INTERNAL].defaultPort ??
+            (this.protocol === 'https:' ? 443 : 80));
+    }
+    set defaultPort(v) {
+        if (this[INTERNAL]) {
+            this[INTERNAL].defaultPort = v;
+        }
+    }
+    get protocol() {
+        return (this[INTERNAL].protocol ??
+            (this.isSecureEndpoint() ? 'https:' : 'http:'));
+    }
+    set protocol(v) {
+        if (this[INTERNAL]) {
+            this[INTERNAL].protocol = v;
+        }
     }
 }
 exports.Agent = Agent;
@@ -19096,11 +19089,12 @@ async function extractArticle(feedEntry) {
     return article;
 }
 exports.extractArticle = extractArticle;
+const useProxy = false;
 async function fetchArticle(feedEntry) {
     try {
         const extract = await (0, helpers_1.articleExtractor)();
         return await extract(feedEntry.link, {}, {
-            agent: (0, proxy_1.nextProxyAgent)(),
+            agent: useProxy ? (0, proxy_1.nextProxyAgent)() : undefined,
         });
     }
     catch (err) {
