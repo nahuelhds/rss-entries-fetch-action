@@ -1,4 +1,5 @@
 import { FeedEntryWithLink } from "../processors/processEntry";
+import { nextProxyAgent } from "../utils/proxy";
 import { ArticleNotFoundError, ArticleWithoutUrlError } from "./errors";
 import { articleExtractor } from "./helpers";
 import { ArticleData } from "./types/article-extractor";
@@ -21,7 +22,13 @@ export async function extractArticle(feedEntry: FeedEntryWithLink) {
 async function fetchArticle(feedEntry: FeedEntryWithLink) {
   try {
     const extract = await articleExtractor();
-    return await extract(feedEntry.link);
+    return await extract(
+      feedEntry.link,
+      {},
+      {
+        agent: nextProxyAgent(),
+      },
+    );
   } catch (err) {
     const error = err as Error;
     if (error.message === "Request failed with error code 404") {
