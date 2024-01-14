@@ -24,6 +24,8 @@ const useProxy = false;
 async function fetchArticle(feedEntry: FeedEntryWithLink) {
   try {
     const extract = await articleExtractor();
+    // TODO: see fetch-retry for exponential backoff
+    //  should change to use extractHtml so we can use the fetch directly
     return await extract(
       feedEntry.link,
       {},
