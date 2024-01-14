@@ -1,17 +1,33 @@
 import fs from "fs";
 
-import { FileExistsError, storeFile } from "./fs";
+import { FeedEntryWithoutLinkError } from "../extractors/errors";
+import { FeedEntry } from "../extractors/types/feed-extractor";
+import {
+  FileExistsError,
+  storeFile,
+  validateAndGetDestinationPath,
+} from "./fs";
 
 jest.mock("fs");
 
-describe("storeFile", () => {
-  it("throws FileExistsError if file already exists", () => {
-    fs.existsSync = jest.fn().mockReturnValue(true);
-    expect(() => storeFile("some-file.json", "fileContents")).toThrow(
-      FileExistsError,
+describe("validateAndGetDestinationPath", () => {
+  it("throws FeedEntryWithoutLinkError if the feed has no link", async () => {
+    const feedEntry = {} as FeedEntry;
+    expect(() => validateAndGetDestinationPath(feedEntry)).toThrow(
+      FeedEntryWithoutLinkError,
     );
   });
 
+  it("throws FileExistsError if file already exists", () => {
+    fs.existsSync = jest.fn().mockReturnValue(true);
+    const feedEntry = { link: "some-fake-link" } as FeedEntry;
+    expect(() => validateAndGetDestinationPath(feedEntry)).toThrow(
+      FileExistsError,
+    );
+  });
+});
+
+describe("storeFile", () => {
   it("creates the file", () => {
     const expectedPath = `dir/file.json`;
     const expectedContent = "fileContents";
@@ -50,8 +66,6 @@ describe("storeFile", () => {
     const path = `${expectedDir}/file.json`;
     fs.existsSync = jest
       .fn()
-      // File exists
-      .mockReturnValueOnce(false)
       // Dir exists
       .mockReturnValueOnce(true);
 

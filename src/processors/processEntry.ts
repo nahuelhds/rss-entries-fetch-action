@@ -3,15 +3,21 @@ import { CustomError } from "ts-custom-error";
 import { extractArticle } from "../extractors/extractArticle";
 import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
-import { FileExistsError, storeFile } from "../utils/fs";
-import { buildFilename, getDestinationFolder } from "../utils/io";
+import {
+  FileExistsError,
+  storeFile,
+  validateAndGetDestinationPath,
+} from "../utils/fs";
+
+export type FeedEntryWithLink = FeedEntry & { link: string };
 
 export async function processEntry(feedEntry: FeedEntry) {
-  const outputDir = getDestinationFolder();
   try {
-    const article = await extractArticle(feedEntry);
-    const filename = buildFilename(article.url);
-    const destinationFile = `${outputDir}/${filename}.json`;
+    // Check destination path first because it throws if the file already exists
+    // this way we avoid request what we don't actually need
+    const destinationFile = validateAndGetDestinationPath(feedEntry);
+    const feedEntryWithLink = feedEntry as FeedEntryWithLink;
+    const article = await extractArticle(feedEntryWithLink);
     const fileContents = JSON.stringify(article, null, 2);
     storeFile(destinationFile, fileContents);
     logger.info(

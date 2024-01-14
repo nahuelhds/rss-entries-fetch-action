@@ -2,11 +2,10 @@ import { setFailed } from "@actions/core";
 
 import { FeedEntryWithoutLinkError } from "../extractors/errors";
 import { ArticleWithUrl, extractArticle } from "../extractors/extractArticle";
-import { FeedEntry } from "../extractors/types/feed-extractor";
 import logger from "../logger";
-import { storeFile } from "../utils/fs";
+import { storeFile, validateAndGetDestinationPath } from "../utils/fs";
 import { buildFilename, getDestinationFolder } from "../utils/io";
-import { processEntry } from "./processEntry";
+import { FeedEntryWithLink, processEntry } from "./processEntry";
 
 jest.mock("@actions/core");
 jest.mock("../extractors/extractArticle");
@@ -16,6 +15,10 @@ jest.mock("../utils/fs");
 describe("processEntry", () => {
   logger.warn = jest.fn();
   const setFailedMock = setFailed as jest.MockedFunction<typeof setFailed>;
+  const validateAndGetDestinationPathMock =
+    validateAndGetDestinationPath as jest.MockedFunction<
+      typeof validateAndGetDestinationPath
+    >;
   const extractArticleMock = extractArticle as jest.MockedFunction<
     typeof extractArticle
   >;
@@ -43,19 +46,22 @@ describe("processEntry", () => {
     extractArticleMock.mockRejectedValue(expectedError);
 
     await processEntry(feedEntry);
-
     expect(storeFileMock).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledWith(expectedError.message);
     expect(setFailedMock).not.toHaveBeenCalled();
   });
 
   it("process the entry if everything is okay", async () => {
-    const feedEntry = { id: "test-id" } as FeedEntry;
+    const feedEntry = {
+      id: "test-id",
+      link: "https://www.google.com",
+    } as FeedEntryWithLink;
     const article = { url: "https://www.google.com" } as ArticleWithUrl;
 
-    const filename = buildFilename(article.url);
+    const filename = buildFilename(feedEntry.link);
     const destinationFile = `${getDestinationFolder()}/${filename}.json`;
     const fileContents = JSON.stringify(article, null, 2);
+    validateAndGetDestinationPathMock.mockReturnValue(destinationFile);
     extractArticleMock.mockResolvedValue(article);
 
     await processEntry(feedEntry);

@@ -1,7 +1,3 @@
-/**
- * Unit tests for the action's entrypoint, src/index.ts
- */
-
 import { setFailed } from "@actions/core";
 
 import { runAction } from "./main";
@@ -12,6 +8,7 @@ import { getInputFeedUrls } from "./utils/io";
 jest.mock("@actions/core");
 jest.mock("./processors/processFeed");
 jest.mock("./utils/io");
+jest.mock("./logger");
 
 describe("runAction", () => {
   const setFailedMock = setFailed as jest.MockedFunction<typeof setFailed>;

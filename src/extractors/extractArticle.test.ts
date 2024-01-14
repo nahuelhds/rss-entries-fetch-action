@@ -1,12 +1,8 @@
-import {
-  ArticleNotFoundError,
-  ArticleWithoutUrlError,
-  FeedEntryWithoutLinkError,
-} from "./errors";
+import { FeedEntryWithLink } from "../processors/processEntry";
+import { ArticleNotFoundError, ArticleWithoutUrlError } from "./errors";
 import { extractArticle } from "./extractArticle";
 import { articleExtractor } from "./helpers";
 import { ArticleData } from "./types/article-extractor";
-import { FeedEntry } from "./types/feed-extractor";
 
 jest.mock("./helpers.ts", () => ({
   articleExtractor: jest.fn(),
@@ -17,21 +13,10 @@ describe("extractArticle", () => {
     typeof articleExtractor
   >;
 
-  it("throws FeedEntryWithoutLinkError if the feed has no link", async () => {
-    const testArticleData = {} as ArticleData;
-    const articleDataMock = jest.fn().mockResolvedValue(testArticleData);
-    articleExtractorMock.mockResolvedValue(articleDataMock);
-
-    const feedEntry = { link: "" } as FeedEntry;
-    await expect(async () => await extractArticle(feedEntry)).rejects.toThrow(
-      FeedEntryWithoutLinkError,
-    );
-  });
-
   it("throws ArticleNotFoundError if the entry returns null", async () => {
     const articleDataMock = jest.fn().mockResolvedValue(null);
     articleExtractorMock.mockResolvedValue(articleDataMock);
-    const feedEntry = { link: "some-fake-link" } as FeedEntry;
+    const feedEntry = { link: "some-fake-link" } as FeedEntryWithLink;
     await expect(async () => await extractArticle(feedEntry)).rejects.toThrow(
       ArticleNotFoundError,
     );
@@ -42,7 +27,7 @@ describe("extractArticle", () => {
       .fn()
       .mockResolvedValue({ url: undefined } as ArticleData);
     articleExtractorMock.mockResolvedValue(articleDataMock);
-    const feedEntry = { link: "some-fake-link" } as FeedEntry;
+    const feedEntry = { link: "some-fake-link" } as FeedEntryWithLink;
     await expect(async () => await extractArticle(feedEntry)).rejects.toThrow(
       ArticleWithoutUrlError,
     );
@@ -53,7 +38,7 @@ describe("extractArticle", () => {
     const articleDataMock = jest.fn().mockResolvedValue(expectedArticleData);
     articleExtractorMock.mockResolvedValue(articleDataMock);
 
-    const feedEntry = { link: "some-fake-link" } as FeedEntry;
+    const feedEntry = { link: "some-fake-link" } as FeedEntryWithLink;
     expect(await extractArticle(feedEntry)).toBe(expectedArticleData);
   });
 });
