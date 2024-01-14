@@ -19,6 +19,8 @@ export async function extractArticle(feedEntry: FeedEntryWithLink) {
   return article as ArticleWithUrl;
 }
 
+const useProxy = false;
+
 async function fetchArticle(feedEntry: FeedEntryWithLink) {
   try {
     const extract = await articleExtractor();
@@ -26,7 +28,7 @@ async function fetchArticle(feedEntry: FeedEntryWithLink) {
       feedEntry.link,
       {},
       {
-        agent: nextProxyAgent(),
+        agent: useProxy ? nextProxyAgent() : undefined,
       },
     );
   } catch (err) {

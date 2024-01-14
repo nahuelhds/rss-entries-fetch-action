@@ -55,5 +55,5 @@ jobs:
         id: test-action
         uses: ./
         with:
-          feed_urls: "http://brecha.com.uy/feed/"
+          feed_urls: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
           destination_folder: "./test_ci"
