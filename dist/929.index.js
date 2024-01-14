@@ -27694,6 +27694,9 @@ class element_Element extends ParentNode {
   get previousElementSibling() { return previousElementSibling(this); }
   get nextElementSibling() { return non_document_type_child_node_nextElementSibling(this); }
 
+  before(...nodes) { before(this, nodes); }
+  after(...nodes) { after(this, nodes); }
+  replaceWith(...nodes) { replaceWith(this, nodes); }
   // <ShadowDOM>
   get shadowRoot() {
     if (shadowRoots.has(this)) {
@@ -27703,12 +27706,6 @@ class element_Element extends ParentNode {
     }
     return null;
   }
-
-  before(...nodes) { before(this, nodes); }
-
-  after(...nodes) { after(this, nodes); }
-
-  replaceWith(...nodes) { replaceWith(this, nodes); }
   // </Mixins>
 
   // <specialGetters>

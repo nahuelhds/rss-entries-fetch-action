@@ -17593,10 +17593,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.extractArticle = void 0;
 const errors_1 = __nccwpck_require__(2694);
 const helpers_1 = __nccwpck_require__(1226);
-async function fetchArticle(feedEntry) {
-    if (!feedEntry.link) {
-        throw new errors_1.FeedEntryWithoutLinkError(feedEntry);
+async function extractArticle(feedEntry) {
+    const article = await fetchArticle(feedEntry);
+    if (article === null) {
+        throw new errors_1.ArticleNotFoundError(feedEntry);
     }
+    if (!article.url) {
+        throw new errors_1.ArticleWithoutUrlError(feedEntry, article);
+    }
+    return article;
+}
+exports.extractArticle = extractArticle;
+async function fetchArticle(feedEntry) {
     try {
         const extract = await (0, helpers_1.articleExtractor)();
         return await extract(feedEntry.link);
@@ -17609,17 +17617,6 @@ async function fetchArticle(feedEntry) {
         throw err;
     }
 }
-async function extractArticle(feedEntry) {
-    const article = await fetchArticle(feedEntry);
-    if (article === null) {
-        throw new errors_1.ArticleNotFoundError(feedEntry);
-    }
-    if (!article.url) {
-        throw new errors_1.ArticleWithoutUrlError(feedEntry, article);
-    }
-    return article;
-}
-exports.extractArticle = extractArticle;
 
 
 /***/ }),
@@ -17744,13 +17741,13 @@ const ts_custom_error_1 = __nccwpck_require__(6887);
 const extractArticle_1 = __nccwpck_require__(9139);
 const logger_1 = __importDefault(__nccwpck_require__(4636));
 const fs_1 = __nccwpck_require__(1716);
-const io_1 = __nccwpck_require__(1039);
 async function processEntry(feedEntry) {
-    const outputDir = (0, io_1.getDestinationFolder)();
     try {
-        const article = await (0, extractArticle_1.extractArticle)(feedEntry);
-        const filename = (0, io_1.buildFilename)(article.url);
-        const destinationFile = `${outputDir}/${filename}.json`;
+        // Check destination path first because it throws if the file already exists
+        // this way we avoid request what we don't actually need
+        const destinationFile = (0, fs_1.validateAndGetDestinationPath)(feedEntry);
+        const feedEntryWithLink = feedEntry;
+        const article = await (0, extractArticle_1.extractArticle)(feedEntryWithLink);
         const fileContents = JSON.stringify(article, null, 2);
         (0, fs_1.storeFile)(destinationFile, fileContents);
         logger_1.default.info(`New article stored: "%s". Path: "%s"`, article.url, destinationFile);
@@ -17865,14 +17862,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FileExistsError = exports.storeFile = void 0;
+exports.FileExistsError = exports.storeFile = exports.validateAndGetDestinationPath = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const ts_custom_error_1 = __nccwpck_require__(6887);
-function storeFile(destinationPath, fileContents) {
-    if (fs_1.default.existsSync(destinationPath)) {
-        throw new FileExistsError(destinationPath);
+const errors_1 = __nccwpck_require__(2694);
+const io_1 = __nccwpck_require__(1039);
+function validateAndGetDestinationPath(feedEntry) {
+    if (!feedEntry.link) {
+        throw new errors_1.FeedEntryWithoutLinkError(feedEntry);
     }
+    const filename = (0, io_1.buildFilename)(feedEntry.link);
+    const outputDir = (0, io_1.getDestinationFolder)();
+    const destinationFile = `${outputDir}/${filename}.json`;
+    if (fs_1.default.existsSync(destinationFile)) {
+        throw new FileExistsError(destinationFile);
+    }
+    return destinationFile;
+}
+exports.validateAndGetDestinationPath = validateAndGetDestinationPath;
+function storeFile(destinationPath, fileContents) {
     const dir = path_1.default.dirname(destinationPath);
     if (!fs_1.default.existsSync(dir)) {
         fs_1.default.mkdirSync(dir, { recursive: true });
